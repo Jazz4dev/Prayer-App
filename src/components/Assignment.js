@@ -1,11 +1,30 @@
-import React, {useState} from "react";
-import {useDispatch} from "react-redux";
-import {registerUser} from "../redux/users/users.actions";
-import MyRadioGroup from "./MyRadioGroup";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getAllData, registerUser} from "../redux/users/users.actions";
+import {USERS_FEATURE_KEY} from "../redux/users/users.reducer";
+
+
 
 let Assignment = () => {
-    const [platformValue, plaftormInputProps] = useRadioButtons("platform");
     let dispatch = useDispatch();
+    let userInfo = useSelector((state) => {
+       return state[USERS_FEATURE_KEY].user;
+    });
+
+
+    let ayatAlKursi = userInfo.filter((prayer) => {
+        return prayer.prayerType === "Ayat Al Kursi";
+    });
+
+    let surahalYaseen = userInfo.filter((prayer) => {
+        return prayer.prayerType === "Surah Al Yaseen";
+    });
+
+    let surahAlikhlas = userInfo.filter((prayer) => {
+        return prayer.prayerType === "Surah Al Ikhlas";
+    });
+
+    let totalPrayer = ayatAlKursi.length + surahAlikhlas.length + surahalYaseen.length;
 
     let [user , setUser] = useState({
        name : '',
@@ -24,130 +43,109 @@ let Assignment = () => {
       })
     };
 
-    // counterChange
-    let counterChange = () => {
-      setUser({
-          ...user,
-          count :  user.count > 0 ? user.count - 1 : null
-      })
-    };
-
     // submitUser
     let submitUser = (e) => {
-        e.preventDefault();
-        counterChange();
         dispatch(registerUser(user));
         alert(`Thank You ${user.name}`);
+        dispatch(getAllData());
     };
-    function useRadioButtons(name) {
-        const [value, setState] = useState(null);
-      
-        const handleChange = e => {
-          setState(e.target.value);
-        };
-      
-        const inputProps = {
-          name,
-          type: "radio",
-          onChange: handleChange
-        };
-      
-        return [value, inputProps];
-      }
-    
+
+    useEffect(() => {
+        dispatch(getAllData());
+    },[]);
   return(
       <React.Fragment>
-          <div className="container mt-3">
-              <div className="row ">
-             
-                  <div className="col-md-9 ">
-                      <div className="card">
-                          <div className="card-header bg-success text-white">
-                                <p className="h4">Special Prayer for maghfirat of my Mother(مسرت آسما)</p>
-                                <p className="h6">میری والدہ کی مغفرت کے لئے خصوصی دعا اور تلاوت..مسرت آسما 
-                        </p> 
-                        <p className="h7">Target Date  : 9 June 2021 (9 جون )</p>
-                         </div>
-
-                          <div className="card-body bg-light">
-                              <form onSubmit={submitUser}>
-                                  <div className="form-group">
-                                      <label>Name</label>
-                                      <input
-                                          name='name'
-                                          value={user.name?user.name:"Ahle khair"}
-                                          onChange={handleInput}
-                                          type="text" className='form-control' placeholder='' />
-                                  </div>
-                                  <label>Email</label>
-                                  <div className="form-group">
-                                      <input
-                                          name='email'
-                                          value={user.email}
-                                          onChange={handleInput}
-                                          type="email" className='form-control' placeholder='Email for future challanges'/>
-                                  </div>
-                                  {/* <p onChange={counterChange}  className="h5">Counter : {user.count}</p> */}
-
-                                
-                                  <div className="form-group">
-                                  <label>Praying (Tilawat)</label>
-                                  <fieldset>
-         <p>Surah Al Yaseen   يس  
-          <input
-            value="Yaseen"
-            checked={platformValue === "Yaseen"}
-            {...plaftormInputProps}
-          /></p>
-         
-          <br/>
-          <p > Ayat Al Kursi آية الكرسي     
-          <input
-            value="alKursi"
-            checked={platformValue === "alKursi"}
-            {...plaftormInputProps}
-          /></p>
-      
-           <br/>
-           <p>
-          Surah Al Ikhlas   الإخلاص  
-          <input
-            value="ikhlas"
-            checked={platformValue === "ikhlas"}
-            {...plaftormInputProps}
-          />
-        
-          </p>
-         
-        </fieldset>
-                                   
-                                      {/* <select required
-                                              name='prayerType'
-                                              value={user.prayerType}
+              <div className="container mt-5">
+                  <div className="row">
+                      <div className="col-md-5">
+                          <div className="card">
+                              <div className="card-header bg-success text-white">
+                                  <p className="h3">Prayers</p>
+                              </div>
+                              <div className="card-body bg-light">
+                                  <form onSubmit={submitUser}>
+                                      <div className="form-group">
+                                          <input
+                                              name='name'
+                                              value={user.name}
                                               onChange={handleInput}
-                                              className="form-control">
-                                          <option>Select Prayer</option>
-                                          <option value="MASHAALLAH">Masha Allah</option>
-                                          <option value="ALHUMDULILLAH">ALhumdulillah</option>
-                                          <option value="JAZAKALLAH">Jazak Allah</option>
-                                      </select> */}
-                                  </div>
-                                  <div className="form-group mt-3">
+                                              type="text" className='form-control' placeholder='User Name'/>
+                                      </div>
+                                      <div className="form-group">
+                                          <input
+                                              name='email'
+                                              value={user.email}
+                                              onChange={handleInput}
+                                              type="email" className='form-control' placeholder='Email'/>
+                                      </div>
+                                      <p className="h4 font-weight-bold">Praying (Tilawat)</p>
+
+                                      <div className="form-check">
+                                          <input
+                                              name='prayerType'
+                                              onChange={handleInput}
+                                              value='Surah Al Yaseen'
+                                              className="form-check-input" type="radio"
+                                              id="surahYaseen"/>
+                                          <label className="form-check-label font-weight-bold" htmlFor="flexRadioDefault1">
+                                              Surah Al Yaseen
+                                          </label>
+                                      </div>
+                                      <div className="form-check">
+                                          <input
+                                              name='prayerType'
+                                              onChange={handleInput}
+                                              value='Ayat Al Kursi'
+                                              className="form-check-input" type="radio"
+                                              id="ayatAlKursi"/>
+                                          <label className="form-check-label font-weight-bold" htmlFor="flexRadioDefault1">
+                                              Ayat Al Kursi
+                                          </label>
+                                      </div>
+                                      <div className="form-check">
+                                          <input
+                                              name='prayerType'
+                                              onChange={handleInput}
+                                              value='Surah Al Ikhlas'
+                                              className="form-check-input" type="radio"
+                                              id="surahIkhlas"/>
+                                          <label className="form-check-label font-weight-bold" htmlFor="flexRadioDefault1">
+                                              Surah Al Ikhlas
+                                          </label>
+                                      </div>
+
+                                      <div className="form-group mt-3">
                                       <textarea
                                           name='duaDescription'
                                           value={user.duaDescription}
                                           onChange={handleInput}
-                                          rows="4" className="form-control" placeholder="Dua اَلدُّعَاءُ‎"/>
-                                  </div>
-                                  <div className='form-group'>
-                                      <input type="submit" className='btn btn-sm btn-success' value="Submit"/>
-                                  </div>
-                              </form>
+                                          rows="4" className="form-control" placeholder="Dua Description"/>
+                                      </div>
+                                      <div className='form-group'>
+                                          <input type="submit" className='btn btn-sm btn-success' value="Submit"/>
+                                      </div>
+                                  </form>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div className="col-md-3">
+                          <div className="card">
+                              <div className="card-header bg-success text-white">
+                                  <p className="h3">Prayer Counter</p>
+                              </div>
+                              <div className="card-body bg-light">
+                                  <ul className="list-group">
+                                      <li className="list-group-item font-weight-bold">Surah Al Yaseen : <span className='text-success'>{surahalYaseen.length}</span></li>
+                                      <li className="list-group-item font-weight-bold">Ayat Al Kursi : <span className='text-success'>{ayatAlKursi.length}</span></li>
+                                      <li className="list-group-item font-weight-bold">Surah Al Ikhlas : <span className='text-success'>{surahAlikhlas.length}</span></li>
+                                      <li className="list-group-item font-weight-bold">Total Prayers : <span className='text-success'>{totalPrayer}</span></li>
+                                  </ul>
+                              </div>
                           </div>
                       </div>
                   </div>
               </div>
-          </div>
       </React.Fragment>
   )
 };

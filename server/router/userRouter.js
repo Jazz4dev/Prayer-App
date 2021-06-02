@@ -39,6 +39,23 @@ router.post('/register' , [
     }
 });
 
-
+/*
+    Usage : Get All Data
+    URL  : http://127.0.0.1:5000/users/
+    Method : GET
+    Fields : no-fields
+    Access : Public
+ */
+//
+router.get('/' , async (request , response) => {
+    try {
+        let userData = await User.find();
+        return response.status(200).json(userData);
+    }
+    catch (error) {
+        console.error(error);
+        return response.status(500).json(error);
+    }
+});
 
 module.exports = router;
