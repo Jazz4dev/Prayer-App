@@ -5,7 +5,7 @@ import Popup from './Popup';
 
 
 let Assignment2 = () => {
-    const [platformValue, plaftormInputProps] = useRadioButtons("platform");
+    
     let dispatch = useDispatch();
 
     let [user, setUser] = useState({
@@ -34,13 +34,13 @@ let Assignment2 = () => {
     };
 
     // submitUser
-    let submitUser = (e) => {
+    let submitUser = () => {
         if(user.prayerType === "" || user.prayerType == undefined){
             alert('Please Select Atlest one Prayer Type  ---براہ کرم ایک تلاوت منتخب کریں');
           }
           else{      
         counterChange();
-        console.log(user);
+        // console.log(user);
         dispatch(registerUser(user)); 
         Popup.openModal();
         dispatch(getAllData());
@@ -49,23 +49,23 @@ let Assignment2 = () => {
 
     useEffect(() =>{
         dispatch(getAllData());
-    }, []);
+    }, [dispatch]);
 
-    function useRadioButtons(name) {
-        const [value, setState] = useState(null);
+    // function useRadioButtons(name) {
+    //     const [value, setState] = useState(null);
 
-        const handleChange = e => {
-            setState(e.target.value);
-        };
+    //     const handleChange = e => {
+    //         setState(e.target.value);
+    //     };
 
-        const inputProps = {
-            name,
-            type: "radio",
-            onChange: handleChange
-        };
+    //     const inputProps = {
+    //         name,
+    //         type: "radio",
+    //         onChange: handleChange
+    //     };
 
-        return [value, inputProps];
-    }
+    //     return [value, inputProps];
+    // }
 
     return (
         <React.Fragment>
